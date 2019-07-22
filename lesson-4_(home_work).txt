@@ -68,21 +68,19 @@ line = 'mtMmEZUOmcqWiryMQhhTxqKdSTKCYEJlEZCsGAMkgAYEOmHBSQsSUHKvSfbmxULaysmNO'\
        'zTYwZAiRwycdlHfyHNGmkNqSwXUrxGc'
 
 # Вариант без re
-line_convert = list(map(lambda x: chr(x), list(range(65, 91))))  # Преобразуем список из кодов ANSI в список букв A-Z
-#print(line_convert)
+line_convert = [chr(x) for x in range(65, 91)]
 line_new = list(line)
 for i, j in enumerate(line_new[:]):
     for k in line_convert:
         if j == k:
             line_new[i] = ' '
 line_1 = ''.join(line_new).split(' ')
-
 List_1 = [n for n in line_1 if n != '']
-print('Вариант с re: \n', List_1)
+print('Вариант без re: \n', List_1)
 
 # Вариант с re
 List_2 = re.findall(r'[a-z]+', line)
-print('Вариант без re: \n', List_2)
+print('Вариант с re: ', List_2)
 
 
 
@@ -95,21 +93,63 @@ print('Вариант без re: \n', List_2)
 # нужно получить список строк: ['AY', 'NOGI', 'P']
 # Решить задачу двумя способами: с помощью re и без.
 
-line_2 = 'mtMmEZUOmcqWiryMQhhTxqKdSTKCYEJlEZCsGAMkgAYEOmHBSQsSUHKvSfbmxULaysm'\
-       'NOGIPHpEMujalpPLNzRWXfwHQqwksrFeipEUlTLeclMwAoktKlfUBJHPsnawvjPhfgewV'\
-       'fzKTUfSYtBydXaVIpxWjNKgXANvIoumesCSSvjEGRJosUfuhRRDUuTQwLlJJJDdkVjfSA'\
-       'HqnLxooisBDWuxIhyjJaXDYwdoVPnsllMngNlmkpYOlqXEFIxPqqqgAWdJsOvqppOfyIV'\
-       'jXapzGOrfinzzsNMtBIOclwbfRzytmDgEFUzxvZGkdOaQYLVBfsGSAfJMchgBWAsGnBnW'\
-       'etekUTVuPluKRMQsdelzBgLzuwiimqkFKpyQRzOUyHkXRkdyIEBvTjdByCfkVIAQaAbfC'\
-       'vzQWrMMsYpLtdqRltXPqcSMXJIvlBzKoQnSwPFkapxGqnZCVFfKRLUIGBLOwhchWCdJbR'\
-       'uXbJrwTRNyAxDctszKjSnndaFkcBZmJZWjUeYMdevHhBJMBSShDqbjAuDGTTrSXZywYkm'\
-       'jCCEUZShGofaFpuespaZWLFNIsOqsIRLexWqTXsOaScgnsUKsJxiihwsCdBViEQBHQaOn'\
-       'LfBtQQShTYHFqrvpVFiiEFMcIFTrTkIBpGUflwTvAzMUtmSQQZGHlmQKJndiAXbIzVkGS'\
-       'euTSkyjIGsiWLALHUCsnQtiOtrbQOQunurZgHFiZjWtZCEXZCnZjLeMiFlxnPkqfJFbCf'\
-       'KCuUJmGYJZPpRBFNLkqigxFkrRAppYRXeSCBxbGvqHmlsSZMWSVQyzenWoGxyGPvbnhWH'\
-       'uXBqHFjvihuNGEEFsfnMXTfptvIOlhKhyYwxLnqOsBdGvnuyEZIheApQGOXWeXoLWiDQN'\
-       'JFaXiUWgsKQrDOeZoNlZNRvHnLgCmysUeKnVJXPFIzvdDyleXylnKBfLCjLHntltignbQ'\
-       'oiQzTYwZAiRwycdlHfyHNGmkNqSwXUrxGC'
+import re
+
+line2 = 'mtMmEZUOmcqWiryMQhhTxqKdSTKCYEJlEZCsGAMkgAYEOmHBSQsSUHKvSfbmxULaysmNO'\
+       'GIPHpEMujalpPLNzRWXfwHQqwksrFeipEUlTLeclMwAoktKlfUBJHPsnawvjPhfgewVzK'\
+       'TUfSYtBydXaVIpxWjNKgXANvIoumesCSSvjEGRJosUfuhRRDUuTQwLlJJJDdkVjfSAHqn'\
+       'LxooisBDWuxIhyjJaXDYwdoVPnsllMngNlmkpYOlqXEFIxPqqqgAWdJsOvqppOfyIVjXa'\
+       'pzGOrfinzzsNMtBIOclwbfRzytmDgEFUzxvZGkdOaQYLVBfsGSAfJMchgBWAsGnBnWete'\
+       'kUTVuPluKRMQsdelzBgLzuwiimqkFKpyQRzOUyHkXRkdyIEBvTjdByCfkVIAQaAbfCvzQ'\
+       'WrMMsYpLtdqRltXPqcSMXJIvlBzKoQnSwPFkapxGqnZCVFfKRLUIGBLOwhchWCdJbRuXb'\
+       'JrwTRNyAxDctszKjSnndaFkcBZmJZWjUeYMdevHhBJMBSShDqbjAuDGTTrSXZywYkmjCC'\
+       'EUZShGofaFpuespaZWLFNIsOqsIRLexWqTXsOaScgnsUKsJxiihwsCdBViEQBHQaOnLfB'\
+       'tQQShTYHFqrvpVFiiEFMcIFTrTkIBpGUflwTvAzMUtmSQQZGHlmQKJndiAXbIzVkGSeuT'\
+       'SkyjIGsiWLALHUCsnQtiOtrbQOQunurZgHFiZjWtZCEXZCnZjLeMiFlxnPkqfJFbCfKCu'\
+       'UJmGYJZPpRBFNLkqigxFkrRAppYRXeSCBxbGvqHmlsSZMWSVQyzenWoGxyGPvbnhWHuXB'\
+       'qHFjvihuNGEEFsfnMXTfptvIOlhKhyYwxLnqOsBdGvnuyEZIheApQGOXWeXoLWiDQNJFa'\
+       'XiUWgsKQrDOeZoNlZNRvHnLgCmysUeKnVJXPFIzvdDyleXylnKBfLCjLHntltignbQoiQ'\
+       'zTYwZAiRwycdlHfyHNGmkNqSwXUrxGc'
+
+# 1. Решение без re
+line_convert_1 = [chr(x) for x in range(65, 91)]
+line_convert_2 = [chr(x) for x in range(97, 123)]
+line_new = list(line2)
+
+spisok_1 = []
+i = len(line_new) - 1
+while i >= 0:
+    if line_new[i] in line_convert_2:
+        spisok_1.append(line_new[i])
+    elif line_new[i] in line_convert_1 and i <= len(line_new) - 3 and line_new[i + 1] in line_convert_1 and line_new[
+        i + 2] in line_convert_1:
+        spisok_1.append(line_new[i])
+    else:
+        spisok_1.append(' ')
+    i -= 1
+spisok_1.reverse()
+
+i = 0
+spisok_2 = []
+registr = True
+while i <= len(spisok_1) - 1:
+    if spisok_1[i] in line_convert_2:
+        registr = True
+    if spisok_1[i] in line_convert_1 and spisok_1[i - 1] in line_convert_2 and spisok_1[i - 2] in line_convert_2:
+        spisok_2.append(spisok_1[i])
+        registr = False
+    elif spisok_1[i] in line_convert_1 and registr == False:
+        spisok_2.append(spisok_1[i])
+    else:
+        spisok_2.append(' ')
+    i += 1
+z = ''.join(spisok_2).split(' ')
+list_11 = [i for i in z if i != '']
+print('Список без re: ', list_11)
+
+# Решение с помощью re
+list_12 = re.findall(r'[a-z]{2}([A-Z]+)[A-Z]{2}', line2)
+print('Список с re: ', list_12)
 
 # Задание-3:
 # Напишите скрипт, заполняющий указанный файл (самостоятельно задайте имя файла)
