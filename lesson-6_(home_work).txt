@@ -1,0 +1,183 @@
+__author__ = 'Нестеров  Евгений Александрович'
+
+#EASY
+
+
+# Задача-1: Написать класс для фигуры-треугольника, заданного координатами трех точек.
+# Определить методы, позволяющие вычислить: площадь, высоту и периметр фигуры.
+
+import math
+
+class Triangle:
+    def __init__(self, a, b, c):
+        def Length(point_X1, point_X2):
+            return math.sqrt((point_X1[0] - point_X2[0]) ** 2 + (point_X1[1] - point_X2[1]) ** 2)
+        self.a = a
+        self.b = b
+        self.c = c
+        self.ab = Length(self.a, self.b)
+        self.bc = Length(self.b, self.c)
+        self.ca = Length(self.c, self.a)
+
+    def Square(self):
+        semi_perimeter = self.Perimetre() / 2
+        return math.sqrt(semi_perimeter * (semi_perimeter - self.ab) * (semi_perimeter - self.bc) * (semi_perimeter - self.ca))
+
+    def Perimetre(self):
+        return self.ab + self.bc + self.ca
+
+    def Height(self):
+        return self.Square() / (self.ab / 2)
+
+mine_triangle = Triangle((82, 34), (35, 75), (23, 52))
+print("Площадь треугольника:", mine_triangle.Square())
+print("Высота треугольника:", mine_triangle.Height())
+print("Периметр треугольника:", mine_triangle.Perimetre())
+
+
+# Задача-2: Написать Класс "Равнобочная трапеция", заданной координатами 4-х точек.
+# Предусмотреть в классе методы:
+# проверка, является ли фигура равнобочной трапецией;
+# вычисления: длины сторон, периметр, площадь.
+
+
+import math
+
+class Trapeze:
+    def __init__(self, a, b, c, d):
+        def sideLen(Y1, Y2):
+            return math.sqrt((Y1[0] - Y2[0]) ** 2 + (Y1[1] - Y2[1]) ** 2)
+
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.ba = self.ab = sideLen(self.a, self.b)
+        self.cb = self.bc = sideLen(self.b, self.c)
+        self.dc = self.cd = sideLen(self.c, self.d)
+        self.ad = self.da = sideLen(self.d, self.a)
+
+    def Square(self):
+        if self.IsParallel() and self.ab == self.cd:
+            s1 = (self.ab + self.cd) / 2
+            s2 = math.sqrt(self.da ** 2 - ((self.dc - self.ab) ** 2) / 4)
+            return s1 * s2
+        else:
+            return "Это неравнобедренная трапеция"
+
+    def Perimetre(self):
+        return self.ab + self.bc + self.cd + self.da
+
+    def IsParallel(self):
+        l1 = (self.a[1] - self.b[1]) / (self.a[0] - self.b[0])
+        l2 = (self.d[1] - self.c[1]) / (self.d[0] - self.c[0])
+        return l1 == l2
+
+    def Getborders(self):
+        return ', '.join([str(self.ab), str(self.bc), str(self.cd), str(self.ad)])
+
+
+mine_trapeze = Trapeze((0, 0), (2, 0), (2, 2), (0, 2))
+print("Длины сторон трапеции равны:", mine_trapeze.Getborders())
+print("Площадь трапеции: ", mine_trapeze.Square())
+print("Периметр трапеции: ", mine_trapeze.Perimetre())
+
+
+
+
+
+
+#NORMAL
+
+# Задание-1:
+# Реализуйте описаную ниже задачу, используя парадигмы ООП:
+# В школе есть Классы(5А, 7Б и т.д.), в которых учатся Ученики.
+# У каждого ученика есть два Родителя(мама и папа).
+# Также в школе преподают Учителя. Один учитель может преподавать 
+# в неограниченном кол-ве классов свой определенный предмет. 
+# Т.е. Учитель Иванов может преподавать математику у 5А и 6Б,
+# но больше математику не может преподавать никто другой.
+
+# Выбранная и заполненная данными структура должна решать следующие задачи:
+# 1. Получить полный список всех классов школы
+# 2. Получить список всех учеников в указанном классе
+#  (каждый ученик отображается в формате "Фамилия И.О.")
+# 3. Получить список всех предметов указанного ученика 
+#  (Ученик --> Класс --> Учителя --> Предметы)
+# 4. Узнать ФИО родителей указанного ученика
+# 5. Получить список всех Учителей, преподающих в указанном классе
+
+
+class All:
+    def __init__(self, name, secondname, surname):
+        self.name = name
+        self.secondname = secondname
+        self.surname = surname
+
+    def Long_name(self):
+        return self.name + ' ' + self.secondname + ' ' + self.surname
+
+    def Name(self):
+        return '{} {}.{}.'.format(self.surname.title(), self.name[0].upper(), self.secondname[0].upper())
+
+
+class Stud(All):
+    def __init__(self, name, secondname, surname, mother, father, class_name):
+        All.__init__(self, name, secondname, surname)
+        self.mother = mother
+        self.father = father
+        self.class_name = class_name
+
+
+class Teacher(All):
+    def __init__(self, name, secondname, surname, subject):
+        All.__init__(self, name, secondname, surname)
+        self.subject = subject
+
+
+class Class_rooms:
+    def __init__(self, class_room, teachers):
+        self.class_room = class_room
+        self.teacher_1 = {i.subject: i for i in teachers}
+
+
+if __name__ == '__main__':
+    teachers = [Teacher('Николай', 'Петрович', 'Фомин', 'Информатика'),Teacher('Надежда', 'Марковна', 'Семенова', 'Алгебра'),
+                Teacher('Ирина', 'Вячеславна', 'Осипова', 'Геометрия'), Teacher('Тимофей', 'Владимирович', 'Лазарев', 'География'),
+                Teacher('Александр', 'Валерьвич', 'Петров', 'Физика')]
+    classes = [Class_rooms('5 А', [teachers[0], teachers[1], teachers[2]]), Class_rooms('6 Б', [teachers[1], teachers[3], teachers[4]]),
+                Class_rooms('7 А', [teachers[3], teachers[1], teachers[0]])]
+    parents = [All('Иванов', 'Петр', 'Алексеевич'),All('Кирилл', 'Владимирович', 'Петров'),
+               All('Валентина', 'Романовна', 'Иванова'),All('Сергей', 'Иванович', 'Березовский'),
+               All('Валерий', 'Романович', 'Сашов'),All('Инна', 'Александровна', 'Краснова')]
+    students = [Stud('Павел', 'Сергеевич', 'Пашов', parents[0], parents[1], classes[0]),Stud('Сергей', 'Александрович', 'Ежов', parents[2], parents[3], classes[1]),
+                Stud('Кирилл', 'Владимирович', 'Борунов', parents[4], parents[5], classes[2])]
+
+    print('В нашей школе есть классы: ')
+    for i in classes:
+        print(i.class_room)
+
+    for i in classes:
+        print('В {} классе преподают учителя:'.format(i.class_room))
+        for teacher in classes[0].teacher_1.values():
+            print(teacher.Long_name())
+    for i in classes:
+        print("В классе {} учатся ученики:".format(i.class_room))
+        for n in students:
+            print(n.Name())
+
+
+HARD
+
+# Задание-1: Решите задачу (дублированную ниже):
+
+# Дана ведомость расчета заработной платы (файл "data/workers").
+# Рассчитайте зарплату всех работников, зная что они получат полный оклад,
+# если отработают норму часов. Если же они отработали меньше нормы,
+# то их ЗП уменьшается пропорционально, а за каждый час переработки они получают
+# удвоенную ЗП, пропорциональную норме.
+# Кол-во часов, которые были отработаны, указаны в файле "data/hours_of"
+
+# С использованием классов.
+# Реализуйте классы сотрудников так, чтобы на вход функции-конструктора
+# каждый работник получал строку из файла
