@@ -1,0 +1,144 @@
+__author__ = 'Нестеров  Евгений Александрович'
+
+"""
+== Лото ==
+Правила игры в лото.
+Игра ведется с помощью специальных карточек, на которых отмечены числа, 
+и фишек (бочонков) с цифрами.
+Количество бочонков — 90 штук (с цифрами от 1 до 90).
+Каждая карточка содержит 3 строки по 9 клеток. В каждой строке по 5 случайных цифр, 
+расположенных по возрастанию. Все цифры в карточке уникальны. Пример карточки:
+--------------------------
+    9 43 62          74 90
+ 2    27    75 78    82
+   41 56 63     76      86 
+--------------------------
+В игре 2 игрока: пользователь и компьютер. Каждому в начале выдается 
+случайная карточка. 
+Каждый ход выбирается один случайный бочонок и выводится на экран.
+Также выводятся карточка игрока и карточка компьютера.
+Пользователю предлагается зачеркнуть цифру на карточке или продолжить.
+Если игрок выбрал "зачеркнуть":
+	Если цифра есть на карточке - она зачеркивается и игра продолжается.
+	Если цифры на карточке нет - игрок проигрывает и игра завершается.
+Если игрок выбрал "продолжить":
+	Если цифра есть на карточке - игрок проигрывает и игра завершается.
+	Если цифры на карточке нет - игра продолжается.
+	
+Побеждает тот, кто первый закроет все числа на своей карточке.
+Пример одного хода:
+Новый бочонок: 70 (осталось 76)
+------ Ваша карточка -----
+ 6  7          49    57 58
+   14 26     -    78    85
+23 33    38    48    71   
+--------------------------
+-- Карточка компьютера ---
+ 7 11     - 14    87      
+      16 49    55 77    88    
+   15 20     -       76  -
+--------------------------
+Зачеркнуть цифру? (y/n)
+Подсказка: каждый следующий случайный бочонок из мешка удобно получать 
+с помощью функции-генератора.
+Подсказка: для работы с псевдослучайными числами удобно использовать 
+модуль random: http://docs.python.org/3/library/random.html
+"""
+
+
+
+import sys
+import random
+import time
+
+# Выбор бочонка
+class Barrel:
+    def get_barrel(self):
+        List_barrel = [j for j in range(1, self.amount + 1)]
+        random.shuffle(List_barrel)
+        for k, a in enumerate(List_barrel):
+            print('НОВЫЙ РАУНД! \n')
+            print('Новый бочонок: {} (осталось {})'.format(a, self.amount - (k + 1)))
+            yield a
+
+    def __init__(self):
+        self.amount = 90
+        self.gen = self.get_barrel()
+
+# Формирование и выдача карточек
+class Game:
+    def __card_form(self):
+        all_numbers = set()
+        while len(all_numbers) < self.line * 5:
+            all_numbers.add(random.randint(1, 91))
+        cards = list(all_numbers)
+        random.shuffle(cards)
+        cards = [cards[n: n + 5] for n in range(0, len(cards), 5)]
+
+        for i in range(len(cards)):
+            cards[i].sort()
+        self.my_card = cards[:3]
+        self.pc_card = cards[3:]
+
+    def __init__(self):
+        self.line = 6
+        self.__card_form()
+
+    def print_cards(self, gamer_card):
+        print('{:-^30}'.format(self.gamer_name))
+        print(' {0[0]}  {0[1]}  {0[2]}    {0[3]}    {0[4]} '.format(gamer_card[0]))
+        print('  {0[0]}  {0[1]}  {0[2]}   {0[3]}   {0[4]} '.format(gamer_card[1]))
+        print(' {0[0]}    {0[1]}    {0[2]}    {0[3]}    {0[4]} '.format(gamer_card[2]))
+        print('{:-^30}'.format('-'))
+        
+# Считаем очки
+    def point_counter(self, card_player, barrel_number):
+        for j, k in enumerate(card_player):
+            if barrel_number in k:
+                card_player[j][n.index(barrel_number)] = '-'
+                self.counter += 1
+                if self.counter == 15:
+                    print('{} Победила!'.format(self.gamer_name))
+                    sys.exit(1)
+                return True
+        return False
+
+#  Игроки
+class Gamer(Game):
+
+    def __init__(self, gamer_name):
+        self.gamer_name = gamer_name
+        self.score = 0
+
+# Играем!!!
+def Play_the_game():
+    game = Game()
+    barrel = Barrel()
+    Gamer_1 = Gamer('Карточка игрока')
+    Gamer_2 = Gamer('Карточка компьютера')
+
+    while True:
+        num_cask = next(barrel.gen)
+        Gamer_1.print_cards(game.my_card)
+        Gamer_2.print_cards(game.pc_card)
+
+        question_to_gamer = input('Зачеркнуть цифру? (Y or N)')
+        if question_to_gamer == 'y':
+            if Gamer_1.point_counter(game.my_card, num_cask):
+                continue
+            else:
+                print("Конец игры!!!")
+                sys.exit(1)
+        if question_to_gamer == 'n':
+            if Gamer_1.point_counter(game.my_card, num_cask):
+                print("Конец игры")
+                sys.exit(1)
+            elif Gamer_2.point_counter(game.pc_card, num_cask):
+                continue
+        if question_to_gamer != 'n' and question_to_gamer != 'y':
+            print("Введите Y or N")
+            time.sleep(1)
+            continue
+
+if __name__ == '__main__':
+    Play_the_game()
